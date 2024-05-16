@@ -6,5 +6,6 @@ Decision maker
 - Input은 Categorical data(requester_id, role, product), Numeric data(quantity, price, total)로 구성됩니다.
 - 10% 이상의 correlation 데이터만 사용했으며, categorical data는 pandas.get_dummies를 이용해 임베딩했습니다.
 
-예시 데이터
+예시 데이터  
+
 ![image](https://github.com/parks602/Bussines_ai_study/assets/34082230/754823cf-f362-4555-a331-908e12e5045d)
