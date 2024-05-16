@@ -9,3 +9,9 @@ Decision maker
 예시 데이터  
 
 ![image](https://github.com/parks602/Bussines_ai_study/assets/34082230/754823cf-f362-4555-a331-908e12e5045d)
+
+
+Customer_Churn
+- 고객 이탈에 대한 예측을 위한 의사결정을 위한 모델입니다.
+- XG Booster 모델을 사용했으며, Target은 churned로 이탈에 대한 여부입니다.
+  
