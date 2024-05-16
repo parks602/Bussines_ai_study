@@ -10,33 +10,30 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-dataset = 'orders_with_predicted_value.csv'
+dataset = 'churn_data.csv'
 
 df = pd.read_csv(dataset)
+columns = df.columns.tolist()
+encoded_data = df.drop(['id', 'customer_code', 'co_name'], axis=1)
+encoded_data.head()
 
-encoded_data = pd.get_dummies(df)
+y = encoded_data['churned']
+train_df, test_and_val_data, _, _ = train_test_split(encoded_data, y, test_size=0.3, stratify=y, random_state=0)
 
-print(encoded_data.head())
-corrs = encoded_data.corr()['tech_approval_required'].abs()
-columns = corrs[corrs > .1].index
-corrs = corrs.filter(columns)
+y = test_and_val_data['churned']
+val_df, test_df, _, _ = train_test_split(test_and_val_data, y, test_size=0.333, stratify=y, random_state=0)
 
-encoded_data = encoded_data[columns]
-
-
-train_df, val_and_test_data = train_test_split(encoded_data, test_size=0.3, random_state=0)
-val_df, test_df = train_test_split(val_and_test_data, test_size=0.333, random_state=0)
-
-if not os.path.exists:
+if not os.path.exists('data'):
     os.makedirs('data')
+    
 train_data = train_df.to_csv('data/train.csv', header=False, index=False)
 val_data = val_df.to_csv('data/val.csv', header=False, index=False)
 test_data = test_df.to_csv('data/test.csv', header=True, index=False)
  
-X_train = train_df.drop(columns=["tech_approval_required"])
-y_train = train_df["tech_approval_required"]
-X_val = val_df.drop(columns=["tech_approval_required"])
-y_val = val_df["tech_approval_required"]
+X_train = train_df.drop(columns=["churned"])
+y_train = train_df["churned"]
+X_val = val_df.drop(columns=["churned"])
+y_val = val_df["churned"]
 
 # XGBoost 모델의 설정
 params = {
@@ -45,7 +42,8 @@ params = {
     "objective": "binary:logistic",
     "eval_metric": "auc",
     "num_round": 100,
-    "early_stopping_rounds": 10
+    "early_stopping_rounds": 10,
+    "scale_pos_weight": 17
 }
 
 # XGBoost DMatrix 생성
